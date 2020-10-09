@@ -1,0 +1,2 @@
+Question = str
+Answer = str
