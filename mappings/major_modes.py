@@ -1,51 +1,9 @@
+from copy import deepcopy
 from random import choice
 from typing import List, Tuple
 
+from utils.note import Note
 
-IONIAN = {
-    "C": ["C", "D", "E", "F", "G", "A", "B"],
-    "F": ["F", "G", "A", "Bb", "C", "D", "E"],
-    "Bb": ["Bb", "C", "D", "Eb", "F", "G", "A"],
-    "Eb": ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-    "Ab": ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
-    "Db": ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
-    "F#": ["F#", "G#", "A#", "B", "C#", "D#", "F"],
-    "B": ["B", "C#", "D#", "E", "F#", "G#", "A#"],
-    "E": ["E", "F#", "G#", "A", "B", "C#", "D#"],
-    "A": ["A", "B", "C#", "D", "E", "F#", "G#"],
-    "D": ["D", "E", "F#", "G", "A", "B", "C#"],
-    "G": ["G", "A", "B", "C", "D", "E", "F#"],
-}
-
-DORIAN = {
-    "C": ["C", "D", "Eb", "F", "G", "A", "Bb"],
-    "F": ["F", "G", "Ab", "Bb", "C", "D", "Eb"],
-    "Bb": ["Bb", "C", "Db", "Eb", "F", "G", "Ab"],
-    "Eb": ["Eb", "F", "Gb", "Ab", "Bb", "C", "Db"],
-    "Ab": ["Ab", "Bb", "B", "Db", "Eb", "F", "Gb"],
-    "Db": ["Db", "Eb", "E", "Gb", "Ab", "Bb", "B"],
-    "F#": ["F#", "G#", "A", "B", "C#", "D#", "E"],
-    "B": ["B", "C#", "D", "E", "F#", "G#", "A"],
-    "E": ["E", "F#", "G", "A", "B", "C#", "D"],
-    "A": ["A", "B", "C", "D", "E", "F#", "G"],
-    "D": ["D", "E", "F", "G", "A", "B", "C"],
-    "G": ["G", "A", "Bb", "C", "D", "E", "F"],
-}
-
-PHRYGIAN = {
-    "C": ["C", "Db", "Eb", "F", "G", "Ab", "Bb"],
-    "F": ["F", "Gb", "Ab", "Bb", "C", "Db", "Eb"],
-    "Bb": ["Bb", "B", "Db", "Eb", "F", "Gb", "Ab"],
-    "Eb": ["Eb", "E", "Gb", "Ab", "Bb", "B", "Db"],
-    "Ab": ["Ab", "A", "B", "Db", "Eb", "E", "Gb"],
-    "Db": ["Db", "D", "E", "Gb", "Ab", "A", "B"],
-    "F#": ["F#", "G", "A", "B", "C#", "D", "E"],
-    "B": ["B", "C", "D", "E", "F#", "G", "A"],
-    "E": ["E", "F", "G", "A", "B", "C", "D"],
-    "A": ["A", "Bb", "C", "D", "E", "F", "G"],
-    "D": ["D", "Eb", "F", "G", "A", "Bb", "C"],
-    "G": ["G", "Ab", "Bb", "C", "D", "Eb", "F"],
-}
 
 LYDIAN = {
     "C": ["C", "D", "E", "F#", "G", "A", "B"],
@@ -54,58 +12,51 @@ LYDIAN = {
     "Eb": ["Eb", "F", "G", "A", "Bb", "C", "D"],
     "Ab": ["Ab", "Bb", "C", "D", "Eb", "F", "G"],
     "Db": ["Db", "Eb", "F", "G", "Ab", "Bb", "C"],
-    "F#": ["F#", "G#", "A#", "C", "C#", "D#", "F"],
-    "B": ["B", "C#", "D#", "F", "F#", "G#", "A#"],
-    "E": ["E", "F#", "G#", "A#", "B", "C#", "D#"],
-    "A": ["A", "B", "C#", "D#", "E", "F#", "G#"],
-    "D": ["D", "E", "F#", "G#", "A", "B", "C#"],
-    "G": ["G", "A", "B", "C#", "D", "E", "F#"],
+    "F#": ["F#", "Ab", "Bb", "C", "Db", "Eb", "F"],
+    "B": ["B", "Db", "Eb", "F", "F#", "Ab", "Bb"],
+    "E": ["E", "F#", "Ab", "Bb", "B", "Db", "Eb"],
+    "A": ["A", "B", "Db", "Eb", "E", "F#", "Ab"],
+    "D": ["D", "E", "F#", "Ab", "A", "B", "Db"],
+    "G": ["G", "A", "B", "Db", "D", "E", "F#"],
 }
 
-MIXOLYDIAN = {
-    "C": ["C", "D", "E", "F", "G", "A", "Bb"],
-    "F": ["F", "G", "A", "Bb", "C", "D", "Eb"],
-    "Bb": ["Bb", "C", "D", "Eb", "F", "G", "Ab"],
-    "Eb": ["Eb", "F", "G", "Ab", "Bb", "C", "Db"],
-    "Ab": ["Ab", "Bb", "C", "Db", "Eb", "F", "Gb"],
-    "Db": ["Db", "Eb", "F", "Gb", "Ab", "Bb", "B"],
-    "F#": ["F#", "G#", "A#", "B", "C#", "D#", "E"],
-    "B": ["B", "C#", "D#", "E", "F#", "G#", "A"],
-    "E": ["E", "F#", "G#", "A", "B", "C#", "D"],
-    "A": ["A", "B", "C#", "D", "E", "F#", "G"],
-    "D": ["D", "E", "F#", "G", "A", "B", "C"],
-    "G": ["G", "A", "B", "C", "D", "E", "F"],
-}
 
-AEOLIAN = {
-    "C": ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
-    "F": ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
-    "Bb": ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
-    "Eb": ["Eb", "F", "Gb", "Ab", "Bb", "B", "Db"],
-    "Ab": ["Ab", "Bb", "B", "Db", "Eb", "E", "Gb"],
-    "Db": ["Db", "Eb", "E", "Gb", "Ab", "A", "B"],
-    "F#": ["F#", "G#", "A", "B", "C#", "D", "E"],
-    "B": ["B", "C#", "D", "E", "F#", "G", "A"],
-    "E": ["E", "F#", "G", "A", "B", "C", "D"],
-    "A": ["A", "B", "C", "D", "E", "F", "G"],
-    "D": ["D", "E", "F", "G", "A", "Bb", "C"],
-    "G": ["G", "A", "Bb", "C", "D", "Eb", "F"],
-}
+def _lower(lydian: List[str], position: int) -> List[str]:
+    copy = deepcopy(lydian)
+    copy[position] = Note(copy[position]).flat().note
+    return copy
 
-LOCRIAN = {
-    "C": ["C", "Db", "Eb", "F", "Gb", "Ab", "Bb"],
-    "F": ["F", "Gb", "Ab", "Bb", "B", "Db", "Eb"],
-    "Bb": ["Bb", "B", "Db", "Eb", "E", "Gb", "Ab"],
-    "Eb": ["Eb", "E", "Gb", "Ab", "A", "B", "Db"],
-    "Ab": ["Ab", "A", "B", "Db", "D", "E", "Gb"],
-    "Db": ["Db", "D", "E", "Gb", "G", "A", "B"],
-    "F#": ["F#", "G", "A", "B", "C", "D", "E"],
-    "B": ["B", "C", "D", "E", "F", "G", "A"],
-    "E": ["E", "F", "G", "A", "Bb", "C", "D"],
-    "A": ["A", "Bb", "C", "D", "Eb", "F", "G"],
-    "D": ["D", "Eb", "F", "G", "Ab", "Bb", "C"],
-    "G": ["G", "Ab", "Bb", "C", "Db", "Eb", "F"],
-}
+
+def ionian(lydian: List[str]) -> List[str]:
+    return _lower(lydian, 3)
+
+
+def mixolydian(lydian: List[str]) -> List[str]:
+    return _lower(ionian(lydian), 6)
+
+
+def dorian(lydian: List[str]) -> List[str]:
+    return _lower(mixolydian(lydian), 2)
+
+
+def aeolian(lydian: List[str]) -> List[str]:
+    return _lower(dorian(lydian), 5)
+
+
+def phrygian(lydian: List[str]) -> List[str]:
+    return _lower(aeolian(lydian), 1)
+
+
+def locrian(lydian: List[str]) -> List[str]:
+    return _lower(phrygian(lydian), 4)
+
+
+IONIAN = {note: ionian(scale) for note, scale in LYDIAN.items()}
+DORIAN = {note: dorian(scale) for note, scale in LYDIAN.items()}
+PHRYGIAN = {note: phrygian(scale) for note, scale in LYDIAN.items()}
+MIXOLYDIAN = {note: mixolydian(scale) for note, scale in LYDIAN.items()}
+AEOLIAN = {note: aeolian(scale) for note, scale in LYDIAN.items()}
+LOCRIAN = {note: locrian(scale) for note, scale in LYDIAN.items()}
 
 
 def mode_mapper(root: str, mode_type: str) -> Tuple[List[str], str]:
