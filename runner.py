@@ -4,6 +4,7 @@ from typing import Callable
 
 from exercises.intervals import RandomInterval
 from exercises.triads import TriadInversions
+from exercises.major_modes import Modes
 from utils.arg_parser import parse
 from utils.ctx_managers import terminal_cleaner
 
@@ -23,6 +24,7 @@ if __name__ == "__main__":
     exercises = {
         "triads": TriadInversions(args.triad),
         "intervals": RandomInterval(),
+        "modes": Modes(args.mode),
     }
     while True:
         run(exercises[args.exercise])
