@@ -1,4 +1,5 @@
-from typing import List
+from random import choice
+from typing import List, Tuple
 
 MAJOR = {
     "C": ["C", "E", "G"],
@@ -58,7 +59,9 @@ AUGMENTED = {
 }
 
 
-def triad_mapper(root: str, inversion: int, triad_type: str) -> List[str]:
+def triad_mapper(
+    root: str, inversion: int, triad_type: str
+) -> Tuple[List[str], str]:
     inversions = {
         1: lambda triad: triad,
         2: lambda triad: triad[1:] + [triad[0]],
@@ -72,6 +75,8 @@ def triad_mapper(root: str, inversion: int, triad_type: str) -> List[str]:
         "augmented": AUGMENTED,
     }
 
+    if triad_type == "all":
+        triad_type = choice(list(switch.keys()))
     triads = switch[triad_type]
 
-    return inversions[inversion](triads[root])
+    return inversions[inversion](triads[root]), triad_type

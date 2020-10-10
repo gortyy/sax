@@ -5,7 +5,7 @@ from typing import Tuple
 from exercises import Exercise
 from exercises.types import Question, Answer
 from data.notes import ALL_NOTES, CIRCLE_OF_FIFTH_NOTES
-from data.triads import INVERSIONS
+from data.triads import INVERSIONS, TYPE
 from mappings.triads import triad_mapper
 
 
@@ -19,6 +19,10 @@ class TriadInversions(Exercise):
             choice(list(INVERSIONS.keys())),
         )
         mapper = partial(triad_mapper, triad_type=self.triad_type)
-        answer = "".join([ALL_NOTES[note] for note in mapper(root, inversion)])
+        notes, triad_type = mapper(root, inversion)
+        answer = "".join([ALL_NOTES[note] for note in notes])
 
-        return f"{ALL_NOTES[root]}{INVERSIONS[inversion]}", answer
+        return (
+            f"{ALL_NOTES[root]}{TYPE[triad_type]}{INVERSIONS[inversion]}",
+            answer,
+        )
