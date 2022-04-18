@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Tuple
-
-from exercises.types import Question, Answer
+from typing import Protocol, TypeAlias
 
 
-class Exercise(ABC):
-    @abstractmethod
-    def __call__(self) -> Tuple[Question, Answer]:
-        pass
+Question: TypeAlias = str
+Answer: TypeAlias = str
+
+
+class Exercise(Protocol):
+    def __call__(self) -> tuple[Question, Answer]:
+        ...
